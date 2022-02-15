@@ -14,8 +14,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 
-public class BlueShippingHubDetectionPipeline extends OpenCvPipeline {
-    public BlueShippingHubDetectionPipeline(){
+public class BlackShippingHubDetectionPipeline extends OpenCvPipeline {
+    public BlackShippingHubDetectionPipeline(){
         ret = new Mat();
         mat = new Mat();
 
@@ -23,8 +23,8 @@ public class BlueShippingHubDetectionPipeline extends OpenCvPipeline {
 
     private Mat mat;
     private Mat ret;
-    Scalar lowerOrange = new Scalar(0.0, 141.0, 0.0);
-    Scalar upperOrange = new Scalar(255.0, 230.0, 95.0);
+    Scalar lowerOrange = new Scalar(16.0, 128.0, 128.0);
+    Scalar upperOrange = new Scalar(128.0, 128.0, 128.0);
     private double x;
     private double y;
     double width;
@@ -40,18 +40,18 @@ public class BlueShippingHubDetectionPipeline extends OpenCvPipeline {
         ret = new Mat(); // resetting pointer held in ret
         try { // try catch in order for opMode to not crash and force a restart
             /**converting from RGB color space to YCrCb color space**/
-            Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2Lab, Imgproc.COLOR_BGRA2BGR565); //blue
+            Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2Lab); //black
 
 
             /**checking if any pixel is within the orange bounds to make a black and white mask**/
-            Mat mask = new Mat(mat.rows(), mat.cols(), CvType.CV_8UC1); // variable to store mask in
+            Mat mask = new Mat(mat.rows(), mat.cols(), CvType.CV_32SC3); // variable to store mask in
             Core.inRange(mat, lowerOrange, upperOrange, mask);
 
             /**applying to input and putting it on ret in black or yellow**/
             Core.bitwise_and(input, input, ret, mask);
 
             /**applying GaussianBlur to reduce noise when finding contours**/
-            Imgproc.GaussianBlur(mask, mask, new Size(15.0, 15.0), 0.00);
+            Imgproc.GaussianBlur(mask, mask, new Size(8.0, 8.0), 0.00);
 
             /**finding contours on mask**/
             ArrayList<MatOfPoint> contours = new ArrayList<>();
@@ -106,4 +106,5 @@ public class BlueShippingHubDetectionPipeline extends OpenCvPipeline {
         return y;
     }
 }
+
 
