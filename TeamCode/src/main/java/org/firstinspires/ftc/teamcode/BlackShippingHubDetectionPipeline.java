@@ -24,7 +24,7 @@ public class BlackShippingHubDetectionPipeline extends OpenCvPipeline {
     private Mat mat;
     private Mat ret;
     Scalar lowerOrange = new Scalar(16.0, 128.0, 128.0);
-    Scalar upperOrange = new Scalar(128.0, 128.0, 128.0);
+    Scalar upperOrange = new Scalar(32.0, 128.0, 128.0);
     private double x;
     private double y;
     double width;
@@ -44,14 +44,14 @@ public class BlackShippingHubDetectionPipeline extends OpenCvPipeline {
 
 
             /**checking if any pixel is within the orange bounds to make a black and white mask**/
-            Mat mask = new Mat(mat.rows(), mat.cols(), CvType.CV_32SC3); // variable to store mask in
+            Mat mask = new Mat(mat.rows(), mat.cols(), CvType.CV_16F); // variable to store mask in
             Core.inRange(mat, lowerOrange, upperOrange, mask);
 
             /**applying to input and putting it on ret in black or yellow**/
             Core.bitwise_and(input, input, ret, mask);
 
             /**applying GaussianBlur to reduce noise when finding contours**/
-            Imgproc.GaussianBlur(mask, mask, new Size(8.0, 8.0), 0.00);
+            Imgproc.GaussianBlur(mask, mask, new Size(25.0, 25.0), 0.00);
 
             /**finding contours on mask**/
             ArrayList<MatOfPoint> contours = new ArrayList<>();
